@@ -31,10 +31,11 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:id="@+id/password"/>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="SIGN UP"
-        android:id="@+id/emailSignIn"/>
+        android:id="@+id/emailSignUp"/>
 
 </LinearLayout>
