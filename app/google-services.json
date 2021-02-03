@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "864191295227",
+    "project_id": "nombre-del-proyecto-6f29c",
+    "storage_bucket": "nombre-del-proyecto-6f29c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864191295227:android:b373a1e2867fd3767f8a5e",
+        "android_client_info": {
+          "package_name": "com.company.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "864191295227-f7kt96f79hjq5blj0lf6ugg6qu58l691.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp--Bab1l523vHjFqNaemG79bGiysgkb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "864191295227-f7kt96f79hjq5blj0lf6ugg6qu58l691.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864191295227:android:173ea3c95bc2836f7f8a5e",
+        "android_client_info": {
+          "package_name": "com.company.chata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "864191295227-f7kt96f79hjq5blj0lf6ugg6qu58l691.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp--Bab1l523vHjFqNaemG79bGiysgkb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "864191295227-f7kt96f79hjq5blj0lf6ugg6qu58l691.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
