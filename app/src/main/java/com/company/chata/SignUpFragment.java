@@ -54,11 +54,11 @@ public class SignUpFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        vm = new ViewModelProvider(this).get(SignUpViewModel.class);
         nav = Navigation.findNavController(view);
         mAuth =  FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        vm = new ViewModelProvider(this).get(SignUpViewModel.class);
 
         binding.emailSignUp.setOnClickListener(v -> {
             String email = binding.email.getText().toString();
@@ -82,15 +82,12 @@ public class SignUpFragment extends Fragment {
                                                                 .build());
                                     });
 
-
-
                             nav.navigate(R.id.action_signUpFragment_to_chatFragment);
                         } else {
                             Toast.makeText(requireContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         });
-
 
         binding.foto.setOnClickListener(v -> {
             galeria.launch("image/*");

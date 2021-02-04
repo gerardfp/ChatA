@@ -1,8 +1,6 @@
 package com.company.chata;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +35,6 @@ public class ChatFragment extends Fragment {
     private FirebaseFirestore mDb;
     private List<Mensaje> chat = new ArrayList<>();
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return (binding = FragmentChatBinding.inflate(inflater, container, false)).getRoot();
@@ -55,14 +52,14 @@ public class ChatFragment extends Fragment {
         binding.chat.setAdapter(chatAdapter);
 
         binding.enviar.setOnClickListener(v -> {
-            String texto = binding.mensaje.getText().toString();
+            String mensaje = binding.mensaje.getText().toString();
             String fecha = LocalDateTime.now().toString();
-            String email = mAuth.getCurrentUser().getEmail();
             String nombre = mAuth.getCurrentUser().getDisplayName();
+            String email = mAuth.getCurrentUser().getEmail();
             String foto = mAuth.getCurrentUser().getPhotoUrl().toString();
 
             mDb.collection("mensajes")
-                    .add(new Mensaje(texto, fecha, nombre, email, foto));
+                    .add(new Mensaje(mensaje, fecha, nombre, email, foto));
 
             binding.mensaje.setText("");
         });
@@ -105,23 +102,26 @@ public class ChatFragment extends Fragment {
 
             holder.binding.nombre.setText(mensaje.nombre);
             if(mensaje.meme != null) {
-                Log.e("ABCD", "Cargando " + mensaje.meme);
                 Glide.with(requireView()).load(mensaje.meme).into(holder.binding.meme);
+
                 holder.binding.mensaje.setVisibility(View.GONE);
                 holder.binding.meme.setVisibility(View.VISIBLE);
             } else {
                 holder.binding.mensaje.setText(mensaje.mensaje);
+
                 holder.binding.mensaje.setVisibility(View.VISIBLE);
                 holder.binding.meme.setVisibility(View.GONE);
             }
             holder.binding.fecha.setText(mensaje.fecha);
 
-            Glide.with(requireView()).load(mensaje.foto).into(holder.binding.foto);
+            Glide.with(requireView()).load(mensaje.foto).circleCrop().into(holder.binding.foto);
 
 
             if(mensaje.email.equals(mAuth.getCurrentUser().getEmail())){
+                holder.binding.item.setActivated(true);
                 holder.binding.root.setGravity(Gravity.END);
             } else {
+                holder.binding.item.setActivated(false);
                 holder.binding.root.setGravity(Gravity.START);
             }
         }
@@ -139,7 +139,6 @@ public class ChatFragment extends Fragment {
             this.binding = binding;
         }
     }
-
 
     ActivityResultLauncher<String> galeria = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
         FirebaseStorage.getInstance().getReference("imagenes/"+ UUID.randomUUID())
