@@ -1,5 +1,6 @@
 package com.company.chata;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -7,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,10 +22,12 @@ import com.company.chata.databinding.FragmentChatBinding;
 import com.company.chata.databinding.ViewholderMensajeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class ChatFragment extends Fragment {
@@ -31,6 +36,7 @@ public class ChatFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDb;
     private List<Mensaje> chat = new ArrayList<>();
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +66,10 @@ public class ChatFragment extends Fragment {
             binding.mensaje.setText("");
         });
 
+        binding.adjuntar.setOnClickListener(v -> {
+            galeria.launch("image/*");
+        });
+
         mDb.collection("mensajes").orderBy("fecha").addSnapshotListener((value, error) -> {
             chat.clear();
             value.forEach(document -> {
@@ -68,7 +78,8 @@ public class ChatFragment extends Fragment {
                         document.getString("fecha"),
                         document.getString("email"),
                         document.getString("nombre"),
-                        document.getString("foto")
+                        document.getString("foto"),
+                        document.getString("meme")
                         )
                 );
             });
@@ -92,7 +103,16 @@ public class ChatFragment extends Fragment {
             Mensaje mensaje = chat.get(position);
 
             holder.binding.nombre.setText(mensaje.nombre);
-            holder.binding.mensaje.setText(mensaje.mensaje);
+            if(mensaje.meme != null) {
+                Log.e("ABCD", "Cargando " + mensaje.meme);
+                Glide.with(requireView()).load(mensaje.meme).into(holder.binding.meme);
+                holder.binding.mensaje.setVisibility(View.GONE);
+                holder.binding.meme.setVisibility(View.VISIBLE);
+            } else {
+                holder.binding.mensaje.setText(mensaje.mensaje);
+                holder.binding.mensaje.setVisibility(View.VISIBLE);
+                holder.binding.meme.setVisibility(View.GONE);
+            }
             holder.binding.fecha.setText(mensaje.fecha);
 
             Glide.with(requireView()).load(mensaje.foto).into(holder.binding.foto);
@@ -118,4 +138,24 @@ public class ChatFragment extends Fragment {
             this.binding = binding;
         }
     }
+
+
+    ActivityResultLauncher<String> galeria = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+        FirebaseStorage.getInstance().getReference("imagenes/"+ UUID.randomUUID())
+                .putFile(uri)
+                .continueWithTask(task -> task.getResult().getStorage().getDownloadUrl())
+                .addOnSuccessListener(url -> {
+                    mDb.collection("mensajes")
+                            .add(new Mensaje(
+                                    "",
+                                    LocalDateTime.now().toString(),
+                                    mAuth.getCurrentUser().getDisplayName(),
+                                    mAuth.getCurrentUser().getEmail(),
+                                    mAuth.getCurrentUser().getPhotoUrl().toString(),
+                                    url.toString()
+                                    )
+                            );
+                });
+
+    });
 }

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:text="a@a.com"
+        android:text="h@h.com"
         android:id="@+id/email"
         android:inputType="textEmailAddress"/>
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:text="aaaaaa"
+        android:text="hhhhhh"
         android:id="@+id/password"/>
     <Button
         android:layout_width="match_parent"
