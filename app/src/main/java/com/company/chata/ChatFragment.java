@@ -61,7 +61,8 @@ public class ChatFragment extends Fragment {
             String nombre = mAuth.getCurrentUser().getDisplayName();
             String foto = mAuth.getCurrentUser().getPhotoUrl().toString();
 
-            mDb.collection("mensajes").add(new Mensaje(texto, fecha, email, nombre, foto));
+            mDb.collection("mensajes")
+                    .add(new Mensaje(texto, fecha, nombre, email, foto));
 
             binding.mensaje.setText("");
         });
@@ -76,8 +77,8 @@ public class ChatFragment extends Fragment {
                 chat.add(new Mensaje(
                         document.getString("mensaje"),
                         document.getString("fecha"),
-                        document.getString("email"),
                         document.getString("nombre"),
+                        document.getString("email"),
                         document.getString("foto"),
                         document.getString("meme")
                         )
