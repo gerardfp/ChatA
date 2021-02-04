@@ -1,6 +1,7 @@
 package com.company.chata;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.company.chata.databinding.FragmentChatBinding;
 import com.company.chata.databinding.ViewholderMensajeBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,9 +51,11 @@ public class ChatFragment extends Fragment {
         binding.enviar.setOnClickListener(v -> {
             String texto = binding.mensaje.getText().toString();
             String fecha = LocalDateTime.now().toString();
-            String autor = mAuth.getCurrentUser().getEmail();
+            String email = mAuth.getCurrentUser().getEmail();
+            String nombre = mAuth.getCurrentUser().getDisplayName();
+            String foto = mAuth.getCurrentUser().getPhotoUrl().toString();
 
-            mDb.collection("mensajes").add(new Mensaje(texto, fecha, autor));
+            mDb.collection("mensajes").add(new Mensaje(texto, fecha, email, nombre, foto));
 
             binding.mensaje.setText("");
         });
@@ -60,9 +64,13 @@ public class ChatFragment extends Fragment {
             chat.clear();
             value.forEach(document -> {
                 chat.add(new Mensaje(
-                    document.getString("mensaje"),
-                    document.getString("fecha"),
-                    document.getString("autor")));
+                        document.getString("mensaje"),
+                        document.getString("fecha"),
+                        document.getString("email"),
+                        document.getString("nombre"),
+                        document.getString("foto")
+                        )
+                );
             });
 
             chatAdapter.notifyDataSetChanged();
@@ -83,11 +91,14 @@ public class ChatFragment extends Fragment {
 
             Mensaje mensaje = chat.get(position);
 
-            holder.binding.nombre.setText(mensaje.autor);
+            holder.binding.nombre.setText(mensaje.nombre);
             holder.binding.mensaje.setText(mensaje.mensaje);
             holder.binding.fecha.setText(mensaje.fecha);
 
-            if(mensaje.autor.equals(mAuth.getCurrentUser().getEmail())){
+            Glide.with(requireView()).load(mensaje.foto).into(holder.binding.foto);
+
+
+            if(mensaje.email.equals(mAuth.getCurrentUser().getEmail())){
                 holder.binding.root.setGravity(Gravity.END);
             } else {
                 holder.binding.root.setGravity(Gravity.START);
